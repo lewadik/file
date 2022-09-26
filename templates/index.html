@@ -9,6 +9,9 @@ You can also POST remote URLs:
 Or you can shorten URLs:
     curl -F'shorten=http://example.com/some/long/url' {{ fhost_url }}
 
+Alternatively, you can use PUT:
+    curl -X PUT -T 'yourfile.png' {{ fhost_url }}
+
 File URLs are valid for at least 30 days and up to a year (see below).
 Shortened URLs do not expire.
 {% set max_size = config["MAX_CONTENT_LENGTH"]|filesizeformat(True) %}
