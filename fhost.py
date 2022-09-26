@@ -330,9 +330,9 @@ def get(path):
 
     abort(404)
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST", "PUT"])
 def fhost():
-    if request.method == "POST":
+    if request.method == "POST" or request.method == "PUT":
         sf = None
 
         if "file" in request.files:
