@@ -27,8 +27,8 @@ For all other servers, set ``FHOST_USE_X_ACCEL_REDIRECT`` to ``False`` and
 Otherwise, Flask will serve the file with chunked encoding, which sucks and
 should be avoided at all costs.
 
-To make files expire, simply create a cronjob that runs ``cleanup.py`` every
-now and then.
+To make files expire, simply create a cronjob that runs ``FLASK_APP=fhost
+flask prune`` every now and then.
 
 Before running the service for the first time, run ``FLASK_APP=fhost flask db upgrade``.
 

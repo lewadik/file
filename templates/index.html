@@ -11,6 +11,12 @@ Or you can shorten URLs:
 
 File URLs are valid for at least 30 days and up to a year (see below).
 Shortened URLs do not expire.
+
+Files can be set to expire sooner by adding an "expires" parameter (in hours)
+    curl -F'file=@yourfile.png' -F'expires=24' {{ fhost_url }}
+OR by setting "expires" to a timestamp in epoch milliseconds
+    curl -F'file=@yourfile.png' -F'expires=1681996320000' {{ fhost_url }}
+
 {% set max_size = config["MAX_CONTENT_LENGTH"]|filesizeformat(True) %}
 Maximum file size: {{ max_size }}
 Not allowed: {{ config["FHOST_MIME_BLACKLIST"]|join(", ") }}
