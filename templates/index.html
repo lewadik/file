@@ -17,6 +17,9 @@ Files can be set to expire sooner by adding an "expires" parameter (in hours)
 OR by setting "expires" to a timestamp in epoch milliseconds
     curl -F'file=@yourfile.png' -F'expires=1681996320000' {{ fhost_url }}
 
+Expired files won't be removed immediately, but will be removed as part of
+the next purge.
+
 {% set max_size = config["MAX_CONTENT_LENGTH"]|filesizeformat(True) %}
 Maximum file size: {{ max_size }}
 Not allowed: {{ config["FHOST_MIME_BLACKLIST"]|join(", ") }}
