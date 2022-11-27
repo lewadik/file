@@ -443,22 +443,13 @@ def ehandler(e):
         return "Segmentation fault\n", e.code
 
 @app.cli.command("prune")
-@click.option(
-    '-l', '--legacy',
-    is_flag=True,
-    default=False,
-    help="Also look for legacy files"
-)
-def prune(legacy: bool):
+def prune():
     """
     Clean up expired files
 
     Deletes any files from the filesystem which have hit their expiration time.  This
     doesn't remove them from the database, only from the filesystem.  It's recommended
     that server owners run this command regularly, or set it up on a timer.
-
-    Server owners who recently applied a migration that creates legacy files should run
-    this script with the --legacy/-l flag enabled for at least FHOST_MAX_EXPIRATION.
     """
     current_time = time.time() * 1000;
 
@@ -502,21 +493,6 @@ def prune(legacy: bool):
         # Finally, mark that the file was removed
         file.expiration = None;
     db.session.commit()
-
-    # Prior to 0x0 tracking file expiration times, files were removed by scanning the
-    # filesystem.  If this system was recently migrated from the old system, there might
-    # still be files whose expirations aren't tracked and must be noticed the old way.
-    # Therefore, we perform an additional check on files in the upload directory.
-    if legacy:
-        for file in os.listdir(storage):
-            file_path = storage / file
-            stat = os.stat(file_path)
-            file_age = (current_time - stat.st_mtime * 1000) # How long the file has existed, in ms
-            max_age = get_max_lifespan(stat.st_size)
-            if file_age > max_age:
-                print(f"Removing legacy file {file_path}")
-                os.remove(file_path)
-                files_removed += 1;
 
     print(f"\nDone!  {files_removed} file(s) removed")
 
