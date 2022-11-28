@@ -246,8 +246,6 @@ class File(db.Model):
         if not p.is_file():
             with open(p, "wb") as of:
                 of.write(data)
-        else:
-            p.touch()
 
         if not f.nsfw_score and app.config["NSFW_DETECT"]:
             f.nsfw_score = nsfw.detect(p)
