@@ -7,9 +7,9 @@ This is a no-bullshit file hosting and URL shortening service that also runs
 Configuration
 -------------
 
-To configure 0x0, edit ``instance/config.py``.   Resonable defaults are set,
-but there's a couple options you'll need to change before running 0x0 for the
-first time.
+To configure 0x0, copy ``instance/config.example.py`` to ``instance/config.py``, then edit
+it.   Resonable defaults are set, but there's a couple options you'll need to change
+before running 0x0 for the first time.
 
 By default, the configuration is stored in the Flask instance directory.
 Normally, this is in `./instance`, but it might be different for your system.
