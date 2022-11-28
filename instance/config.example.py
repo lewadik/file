@@ -144,14 +144,14 @@ NSFW_DETECT = False
 # are marked as NSFW.
 #
 # If NSFW_DETECT is set to False, then this has no effect.
-NSFW_THRESHOLD = 0.608,
+NSFW_THRESHOLD = 0.608
 
 
 # A list of all characters which can appear in a URL
 #
 # If this list is too short, then URLs can very quickly become long.
 # Generally, the default value for this should work for basically all usecases.
-URL_ALPHABET = "DEQhd2uFteibPwq0SWBInTpA_jcZL5GKz3YCR14Ulk87Jors9vNHgfaOmMXy6Vx-",
+URL_ALPHABET = "DEQhd2uFteibPwq0SWBInTpA_jcZL5GKz3YCR14Ulk87Jors9vNHgfaOmMXy6Vx-"
 
 
  #################################################################################
