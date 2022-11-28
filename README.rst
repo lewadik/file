@@ -7,8 +7,14 @@ This is a no-bullshit file hosting and URL shortening service that also runs
 Configuration
 -------------
 
-To change settings, modify ``instance/config.py``. For more information on
-instance configuration, see `the Flask documentation <https://flask.palletsprojects.com/en/2.0.x/config/#instance-folders>`_.
+To configure 0x0, create ``instance/config.py``.
+The defaults are at the start of ``fhost.py``. To change them,
+add them to ``instance/config.py``— for example::
+
+    SQLALCHEMY_DATABASE_URI = "sqlite:///some/path/db.sqlite"
+
+For more information on instance configuration, see
+`the Flask documentation <https://flask.palletsprojects.com/en/2.0.x/config/#instance-folders>`_.
 
 To customize the home and error pages, simply create a ``templates`` directory
 in your instance directory and copy any templates you want to modify there.
@@ -24,8 +30,10 @@ where ``/up`` is whatever you’ve configured as ``FHOST_STORAGE_PATH``.
 
 For all other servers, set ``FHOST_USE_X_ACCEL_REDIRECT`` to ``False`` and
 ``USE_X_SENDFILE`` to ``True``, assuming your server supports this.
-Otherwise, Flask will serve the file with chunked encoding, which sucks and
-should be avoided at all costs.
+Otherwise, Flask will serve the file with chunked encoding, which has several
+downsides, one of them being that range requests will not work. This is a
+problem for example when streaming media files: It won’t be possible to seek,
+and some ISOBMFF (MP4) files will not play at all.
 
 To make files expire, simply create a cronjob that runs ``cleanup.py`` every
 now and then.
