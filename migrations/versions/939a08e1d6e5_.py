@@ -37,15 +37,6 @@ def get_max_lifespan(filesize: int) -> int:
     max_size = current_app.config.get("MAX_CONTENT_LENGTH", 256 * 1024 * 1024)
     return min_exp + int((-max_exp + min_exp) * (filesize / max_size - 1) ** 3)
 
-db = SQLAlchemy(current_app.__weakref__())
-
-# Representation of the updated (future) File table
-UpdatedFile = sa.table('file',
-    # We only need to describe the columns that are relevent to us
-    sa.column('id', db.Integer),
-    sa.column('expiration', db.BigInteger)
-)
-
 Base = automap_base()
 
 def upgrade():
