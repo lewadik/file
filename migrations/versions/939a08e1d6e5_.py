@@ -61,7 +61,10 @@ def upgrade():
 
     # List of file hashes which have not expired yet
     # This could get really big for some servers
-    unexpired_files = set(os.listdir(storage))
+    try:
+        unexpired_files = set(os.listdir(storage))
+    except FileNotFoundError:
+        return # There are no currently unexpired files
 
     # Calculate an expiration date for all existing files
     files = session.scalars(
