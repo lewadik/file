@@ -15,6 +15,8 @@ from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
 from pathlib import Path
 import sqlalchemy as sa
+from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.orm import Session
 
 import os
 import time
@@ -37,23 +39,22 @@ def get_max_lifespan(filesize: int) -> int:
 
 db = SQLAlchemy(current_app.__weakref__())
 
-# Representations of the original and updated File tables
-class File(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    sha256 = db.Column(db.String, unique = True)
-    ext = db.Column(db.UnicodeText)
-    mime = db.Column(db.UnicodeText)
-    addr = db.Column(db.UnicodeText)
-    removed = db.Column(db.Boolean, default=False)
-    nsfw_score = db.Column(db.Float)
+# Representation of the updated (future) File table
 UpdatedFile = sa.table('file',
     # We only need to describe the columns that are relevent to us
     sa.column('id', db.Integer),
     sa.column('expiration', db.BigInteger)
 )
 
+Base = automap_base()
+
 def upgrade():
     op.add_column('file', sa.Column('expiration', sa.BigInteger()))
+
+    bind = op.get_bind()
+    Base.prepare(autoload_with=bind)
+    File = Base.classes.file
+    session = Session(bind=bind)
 
     storage = Path(current_app.config["FHOST_STORAGE_PATH"])
     current_time = time.time() * 1000;
@@ -63,10 +64,12 @@ def upgrade():
     unexpired_files = set(os.listdir(storage))
 
     # Calculate an expiration date for all existing files
-    files = File.query\
-        .where(
-            sa.not_(File.removed)
-        ).all()
+    files = session.scalars(
+            sa.select(File)
+            .where(
+                sa.not_(File.removed)
+            )
+        )
     for file in files:
         if file.sha256 in unexpired_files:
             file_path = storage / file.sha256
