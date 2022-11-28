@@ -62,7 +62,7 @@ def upgrade():
     # List of file hashes which have not expired yet
     # This could get really big for some servers
     try:
-        unexpired_files = set(os.listdir(storage))
+        unexpired_files = os.listdir(storage)
     except FileNotFoundError:
         return # There are no currently unexpired files
 
@@ -70,20 +70,20 @@ def upgrade():
     files = session.scalars(
             sa.select(File)
             .where(
-                sa.not_(File.removed)
+                sa.not_(File.removed),
+                File.sha256.in_(unexpired_files)
             )
         )
     for file in files:
-        if file.sha256 in unexpired_files:
-            file_path = storage / file.sha256
-            stat = os.stat(file_path)
-            max_age = get_max_lifespan(stat.st_size) # How long the file is allowed to live, in ms
-            file_birth = stat.st_mtime * 1000 # When the file was created, in ms
-            op.execute(
-                sa.update(UpdatedFile)
-                    .where(UpdatedFile.c.id == file.id)
-                    .values({'expiration': int(file_birth + max_age)})
-            )
+        file_path = storage / file.sha256
+        stat = os.stat(file_path)
+        max_age = get_max_lifespan(stat.st_size) # How long the file is allowed to live, in ms
+        file_birth = stat.st_mtime * 1000 # When the file was created, in ms
+        op.execute(
+            sa.update(UpdatedFile)
+                .where(UpdatedFile.c.id == file.id)
+                .values({'expiration': int(file_birth + max_age)})
+        )
 
 def downgrade():
     op.drop_column('file', 'expiration')
