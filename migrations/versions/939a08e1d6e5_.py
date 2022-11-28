@@ -1,4 +1,4 @@
-"""add file expirations [creates legacy files]
+"""add file expirations
 
 Revision ID: 939a08e1d6e5
 Revises: 7e246705da6a
