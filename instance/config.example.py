@@ -25,8 +25,8 @@
 # sqlite:/// + /path/to/your/database.db
 #
 # Until https://git.0x0.st/mia/0x0/issues/70 is resolved, it's recommended that
-# any sqlite databases use an absolute paths, as relative paths aren't
-# consistently resolved.
+# any sqlite databases use an absolute path, as relative paths aren't consistently
+# resolved.
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + '/path/to/database.sqlite'
 
 
@@ -81,15 +81,15 @@ FHOST_STORAGE_PATH = "up"
 FHOST_MAX_EXT_LENGTH = 9
 
 
-# Force the use of certain extensions for certain MIME types
+# A list of filetypes to use when the uploader doesn't specify one
 #
-# When a user uploads a file, we try to figure out what kind it is, both by
-# looking at the contents of the file and checking what the user said the file
-# was.  If the type of the file is on this list, then we force the uploaded
-# file to have the file extension that matches.
+# When a user uploads a file with no file extension, we try to find an extension that
+# works for that file.  This configuration option is the first thing that we check.  If
+# the type of a file without an extension is in this dict, then it'll be used as the file
+# extension for that file.
 #
-# For example, if the user uploads "myfile.png", but the file is actually a
-# jpg, the file will get a URL like "eAa.jpg"
+# For example, if the user uploads "myfile" with no extension, and the file is a jpeg
+# image, the file will get a URL like "eAa.jpg"
 #
 # For a list of MIME types you can use in this list, check
 # https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
