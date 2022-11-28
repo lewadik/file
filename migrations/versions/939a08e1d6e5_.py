@@ -74,16 +74,17 @@ def upgrade():
                 File.sha256.in_(unexpired_files)
             )
         )
+    updates = [] # We coalesce updates to the database here
     for file in files:
         file_path = storage / file.sha256
         stat = os.stat(file_path)
         max_age = get_max_lifespan(stat.st_size) # How long the file is allowed to live, in ms
         file_birth = stat.st_mtime * 1000 # When the file was created, in ms
-        op.execute(
-            sa.update(UpdatedFile)
-                .where(UpdatedFile.c.id == file.id)
-                .values({'expiration': int(file_birth + max_age)})
-        )
+        updates.append({'id': file.id, 'expiration': int(file_birth + max_age)})
+
+    # Apply coalesced updates
+    session.bulk_update_mappings(File, updates)
+    session.commit()
 
 def downgrade():
     op.drop_column('file', 'expiration')
