@@ -461,7 +461,7 @@ def prune():
                 File.expiration.is_not(None),
                 File.expiration < current_time
             )
-        ).all()
+        )
 
     files_removed = 0;
 
