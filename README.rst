@@ -7,8 +7,14 @@ This is a no-bullshit file hosting and URL shortening service that also runs
 Configuration
 -------------
 
-To change settings, modify ``instance/config.py``. For more information on
-instance configuration, see `the Flask documentation <https://flask.palletsprojects.com/en/2.0.x/config/#instance-folders>`_.
+To configure 0x0, copy ``instance/config.example.py`` to ``instance/config.py``, then edit
+it.   Resonable defaults are set, but there's a couple options you'll need to change
+before running 0x0 for the first time.
+
+By default, the configuration is stored in the Flask instance directory.
+Normally, this is in `./instance`, but it might be different for your system.
+For details, see
+`the Flask documentation <https://flask.palletsprojects.com/en/2.0.x/config/#instance-folders>`_.
 
 To customize the home and error pages, simply create a ``templates`` directory
 in your instance directory and copy any templates you want to modify there.
@@ -24,8 +30,10 @@ where ``/up`` is whatever you’ve configured as ``FHOST_STORAGE_PATH``.
 
 For all other servers, set ``FHOST_USE_X_ACCEL_REDIRECT`` to ``False`` and
 ``USE_X_SENDFILE`` to ``True``, assuming your server supports this.
-Otherwise, Flask will serve the file with chunked encoding, which sucks and
-should be avoided at all costs.
+Otherwise, Flask will serve the file with chunked encoding, which has several
+downsides, one of them being that range requests will not work. This is a
+problem for example when streaming media files: It won’t be possible to seek,
+and some ISOBMFF (MP4) files will not play at all.
 
 To make files expire, simply create a cronjob that runs ``FLASK_APP=fhost
 flask prune`` every now and then.
