@@ -24,10 +24,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy import and_, or_
 from sqlalchemy.orm import declared_attr
-import sqlalchemy.types as types
+from sqlalchemy import types
 from jinja2.exceptions import *
 from jinja2 import ChoiceLoader, FileSystemLoader
-from hashlib import file_digest
+from hashlib import sha256
 from magic import Magic
 from mimetypes import guess_extension
 import click
@@ -249,7 +249,10 @@ class File(db.Model):
     def store(file_, requested_expiration: typing.Optional[int], addr, ua,
               secret: bool):
         fstream = file_.stream
-        digest = file_digest(fstream, "sha256").hexdigest()
+        hasher = sha256()
+        for chunk in iter(lambda: fstream.read(4096), b""):
+            hasher.update(chunk)
+        digest = hasher.hexdigest()
         fstream.seek(0, os.SEEK_END)
         flen = fstream.tell()
         fstream.seek(0)
