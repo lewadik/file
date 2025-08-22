@@ -91,6 +91,42 @@ Optional:
     Using compression with SSH (``-C`` option) can significantly
     reduce the bandwidth requirements for graphics.
 
+Quick Deployment
+================
+
+1. **Install Python & pip**
+  - Python 3.8+ and pip required.
+
+2. **Clone the Repository**
+  ::
+    git clone https://github.com/lewadik/file.git
+    cd file
+
+3. **Create a Virtual Environment**
+  ::
+    python3 -m venv venv
+    source venv/bin/activate
+
+4. **Install Dependencies**
+  ::
+    pip install -r requirements.txt
+
+5. **Set Environment Variables**
+  ::
+    export FLASK_APP=fhost
+    export FLASK_ENV=production  # or development
+
+6. **Run Database Migrations**
+  ::
+    flask db upgrade
+
+7. **Start the App**
+  ::
+    flask run
+
+8. **(Optional) Prune Files**
+  ::
+    FLASK_APP=fhost flask prune
 
 NSFW Detection
 --------------
