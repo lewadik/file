@@ -25,7 +25,7 @@ from flask_migrate import Migrate
 from sqlalchemy import and_, or_
 from sqlalchemy.orm import declared_attr
 from sqlalchemy import types
-from jinja2.exceptions import *
+from jinja2.exceptions import TemplateNotFound
 from jinja2 import ChoiceLoader, FileSystemLoader
 from hashlib import sha256
 from magic import Magic
@@ -84,6 +84,7 @@ app.config.update(
 )
 
 app.config.from_pyfile("config.py")
+app.config.setdefault("REMOTE_FETCH_VERIFY_SSL", False)
 app.jinja_loader = ChoiceLoader([
     FileSystemLoader(str(Path(app.instance_path) / "templates")),
     app.jinja_loader
@@ -548,7 +549,7 @@ def store_url(url, addr, ua, secret: bool):
         abort(400)
 
     h = {"Accept-Encoding": "identity"}
-    r = requests.get(url, stream=True, verify=False, headers=h)
+    r = requests.get(url, stream=True, verify=app.config.get("REMOTE_FETCH_VERIFY_SSL", False), headers=h)
 
     try:
         r.raise_for_status()
